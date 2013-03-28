@@ -165,7 +165,7 @@ define('Backbone.ComponentView', [
         return false;
       }
     },
-    canDecorate: function() {
+    canDecorate: function(el) {
       return !!el;
     },
     wasDecorated: function() {

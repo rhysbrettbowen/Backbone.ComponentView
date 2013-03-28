@@ -253,7 +253,7 @@ define('Backbone.ComponentView', [
         index = this.getChildCount() - index;
       }
 
-      index = Math.max(Math.min(0, index), this.getChildCount());
+      index = Math.min(Math.max(0, index || this.getChildCount()), this.getChildCount());
 
       this._setupChildStorage();
 
@@ -276,9 +276,6 @@ define('Backbone.ComponentView', [
 
       if (opt_render && (!child._inDocument || !this._inDocument)) {
         this.createDom();
-        // var children = this.getChildrenBySelector(this.getSelectorForChild(child));
-        // var sibling = children[_.indexOf(children, child) + 1];
-        // child.render_(this.getContentElement(), sibling ? sibling.el : null);
         child.render();
       }
 

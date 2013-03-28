@@ -165,8 +165,8 @@ define('Backbone.ComponentView', [
         return false;
       }
     },
-    canDecorate: function(el) {
-      return true;
+    canDecorate: function() {
+      return !!el;
     },
     wasDecorated: function() {
       return this._wasDecorated;
@@ -240,7 +240,7 @@ define('Backbone.ComponentView', [
         return false;
       }
       if (child == this)
-        throw new Error("can't set as own child");
+        throw new Error('can\'t set as own child');
 
       if (index < 0) {
         index = this.getChildCount() - index;
@@ -362,8 +362,8 @@ define('Backbone.ComponentView', [
           var sel = this.getSelectorForChild(child);
           if (sel) {
             var i = _.indexOf(this.views[sel], child);
-              if (i > 0)
-                this.views[sel].splice(this.views[sel], i, 1);
+            if (i > 0)
+              this.views[sel].splice(this.views[sel], i, 1);
           }
           delete this._childIndex[id];
           this._children = _.without(this._children, child);

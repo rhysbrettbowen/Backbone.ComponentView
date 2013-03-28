@@ -262,6 +262,8 @@ define('Backbone.ComponentView', [
       // Add the child to this component.  goog.object.add() throws an error if
       // a child with the same ID already exists.
       } else {
+        if (child.getParent())
+          child.getParent().removeChild(child);
         if (this._childIndex[child.cid])
           return false;
         this._childIndex[child.cid] = child;

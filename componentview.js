@@ -77,6 +77,8 @@ define('Backbone.ComponentView', [
       return this.el;
     },
     setParent: function(parent) {
+      if (this._parent && this._parent != parent)
+        this._parent.removeChild(this);
       this._parent = parent;
     },
     getModel: function() {
@@ -122,7 +124,7 @@ define('Backbone.ComponentView', [
       if (_.isString(el))
         el = $(el)[0];
       this.render_(el || (this.getParent() &&
-        this.getParent().getElForChild(this)));
+        this.getParent().getElForChild(this)), this.getNextSibling());
       return this;
     },
     getElForChild: function(child) {
@@ -134,6 +136,13 @@ define('Backbone.ComponentView', [
       if (sel)
         sel = this.$(sel)[0];
       return sel || this.getContentElement();
+    },
+    getNextSibling: function() {
+      var parent = this.getParent();
+      if (!parent)
+        return;
+      var children = parent.getChildrenBySelector(parent.getSelectorForChild(this));
+      return children[_.indexOf(children, this) + 1];
     },
     renderBefore: function(sibling) {
       this.render_(sibling.parentNode, sibling);
@@ -236,21 +245,15 @@ define('Backbone.ComponentView', [
       this.addChildAt(child, this.getChildCount(), opt_render);
     },
     addChildAt: function(child, index, opt_render) {
-      if (child._inDocument && (opt_render || !this._inDocument)) {
+      if (child._inDocument && (opt_render || !this._inDocument) || child == this) {
         return false;
       }
-      if (child == this)
-        throw new Error('can\'t set as own child');
 
       if (index < 0) {
         index = this.getChildCount() - index;
-        if (index < 0)
-          index = 0;
       }
 
-      if (index > this.getChildCount()) {
-        index = this.getChildCount();
-      }
+      index = Math.max(Math.min(0, index), this.getChildCount());
 
       this._setupChildStorage();
 
@@ -262,26 +265,21 @@ define('Backbone.ComponentView', [
       // Add the child to this component.  goog.object.add() throws an error if
       // a child with the same ID already exists.
       } else {
-        if (child.getParent())
-          child.getParent().removeChild(child);
-        if (this._childIndex[child.cid])
-          return false;
+        // if (this._childIndex[child.cid])
+          // return false;
         this._childIndex[child.cid] = child;
       }
 
-      // Set the parent of the child to this component.  This throws an error if
-      // the child is already contained by another component.
+      // Set the parent of the child to this component.
       child.setParent(this);
       this._children.splice(index, 0, child);
 
-      if (opt_render &&
-          (!child._inDocument || !this._inDocument || child.getParent() != this)) {
-        if (!this.el) {
-          this.createDom();
-        }
-        var children = this.getChildrenBySelector(this.getSelectorForChild(child));
-        var sibling = children[_.indexOf(children, child) + 1];
-        child.render_(this.getContentElement(), sibling ? sibling.el : null);
+      if (opt_render && (!child._inDocument || !this._inDocument)) {
+        this.createDom();
+        // var children = this.getChildrenBySelector(this.getSelectorForChild(child));
+        // var sibling = children[_.indexOf(children, child) + 1];
+        // child.render_(this.getContentElement(), sibling ? sibling.el : null);
+        child.render();
       }
 
       if (child._inDocument && this._inDocument && child.getParent() == this) {

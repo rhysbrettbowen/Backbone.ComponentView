@@ -322,7 +322,7 @@ define('Backbone.ComponentView', [
       return this.views[selector] || [];
     },
     getChildren: function(selector) {
-      return this.getChildrenBySelector(selector)
+      return this.getChildrenBySelector(selector);
     },
     getSelectorForChild: function(child) {
       var selector;

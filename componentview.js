@@ -316,10 +316,13 @@ define('Backbone.ComponentView', [
     getChildrenBySelector: function(selector) {
       if (!selector) {
         return _.filter(this._children, function(child) {
-          return !_.chain(this.views).values().flatten().contains(child);
+          return !this.getSelectorForChild(child);
         }, this);
       }
       return this.views[selector] || [];
+    },
+    getChildren: function(selector) {
+      return this.getChildrenBySelector(selector)
     },
     getSelectorForChild: function(child) {
       var selector;
@@ -421,8 +424,10 @@ define('Backbone.ComponentView', [
           this.insertView(key, child);
         }, this);
       }, this);
+    },
+    getView: function(selector) {
+      return this.getChildrenBySelector(selector)[0];
     }
-
   });
 
 });

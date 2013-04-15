@@ -23,7 +23,7 @@ files = [
 
 // list of files to exclude
 exclude = [
-  'testacular.conf.js',
+  'karma.conf.js',
   'test/test-config.js'
 ];
 

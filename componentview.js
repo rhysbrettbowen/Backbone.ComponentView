@@ -417,7 +417,7 @@ define('Backbone.ComponentView', [
     },
     insertView: function(selector, child) {
       this._setupChildStorage();
-
+      this.createDom();
       if (!child) {
         child = selector;
         selector = this.getContentElement();

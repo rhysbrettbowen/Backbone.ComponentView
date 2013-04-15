@@ -411,14 +411,13 @@ define('Backbone.ComponentView', [
       _.each(this._views[selector], function(child) {
         this.removeChild(child, true);
       }, this);
-      if (this.isInDocument()) {
-        this.$(selector).empty();
-      }
+      this.createDom();
+      this.$(selector).empty();
       return this.insertView(selector, child);
     },
     insertView: function(selector, child) {
       this._setupChildStorage();
-      this.createDom();
+
       if (!child) {
         child = selector;
         selector = this.getContentElement();

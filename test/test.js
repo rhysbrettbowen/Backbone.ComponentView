@@ -2,6 +2,7 @@ define(['chai', 'Backbone.ComponentView'], function(chai) {
 
 
 	chai.should();
+    var expect = chai.expect;
 
 	describe('Backbone.ComponentView', function() {
 
@@ -175,6 +176,29 @@ define(['chai', 'Backbone.ComponentView'], function(chai) {
 				test2.should.be.true;
 			});
 		});
+
+        describe('setView()', function() {
+           var parent = new Backbone.ComponentView({
+               className: 'testcontent'
+           });
+            var child1 = new Backbone.ComponentView();
+            var child2 = new Backbone.ComponentView();
+            parent.render(document.body);
+            it('should set a child view in the element', function() {
+               parent.setView('.testcontent', child1);
+                child1.isInDocument.should.equal.true;
+                child1.getParent().should.equal(parent);
+                parent.getView('.testcontent').should.equal(child1);
+            });
+            it('should replace child', function() {
+                parent.setView('.testcontent', child2);
+                expect(child1.getParent()).to.be.null;
+                child1.isInDocument().should.equal.false;
+                child2.isInDocument().should.equal.true;
+                child2.getParent().should.equal(parent);
+                parent.getView('.testcontent').should.equal(child2);
+            })
+        });
 
 	});
 

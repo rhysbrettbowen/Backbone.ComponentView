@@ -233,6 +233,8 @@ define('Backbone.ComponentView', [
         child.dispose();
       });
 
+      this.stopListening && this.stopListening();
+
       // Detach the component's element from the DOM, unless it was decorated.
       if (!this._wasDecorated && this.el) {
         this.$el.remove();

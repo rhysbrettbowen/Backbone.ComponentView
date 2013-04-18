@@ -99,7 +99,7 @@ define('Backbone.ComponentView', [
       return this._inDocument;
     },
     createDom: function(force) {
-      if (this._domCreated && !force)
+      if ((this._domCreated || this._wasDecorated) && !force)
         return;
       this._ensureElement();
       if (this.template && _.isString(this.template)) {

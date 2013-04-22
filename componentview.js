@@ -257,7 +257,7 @@ define('Backbone.ComponentView', [
         index = this.getChildCount() - index;
       }
 
-      index = Math.min(Math.max(0, index || this.getChildCount()), this.getChildCount());
+      index = Math.min(Math.max(0, (_.isNumber(index) ? index : this.getChildCount())), this.getChildCount());
 
       this._setupChildStorage();
 

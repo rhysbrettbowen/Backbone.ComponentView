@@ -112,7 +112,11 @@ define('Backbone.ComponentView', [
 
       this._domCreated = true;
 
+      if (this.domCreated)
+        this.domCreated();
+
       this.delegateEvents();
+      this.trigger('domCreated');
     },
     isDomCreated: function() {
       return this._domCreated;
@@ -129,7 +133,20 @@ define('Backbone.ComponentView', [
         this.getParent().getElForChild(this)), this.getNextSibling());
       return this;
     },
+    renderInto: function(el) {
+      if (_.isString(el))
+        el = $(el)[0];
+      if (el && !el.tagName)
+        el = null;
+      el = el || (this.getParent() &&
+        this.getParent().getElForChild(this));
+
+      var  frag = document.createDocumentFragment();
+      this.render_(frag);
+      $(el).append(frag);
+    },
     getElForChild: function(child) {
+      var sel;
       var sel;
       _.each(this._views, function(val, key) {
         if (_.contains(val, child))
@@ -243,6 +260,7 @@ define('Backbone.ComponentView', [
       this._children = null;
       this._childIndex = null;
       this.el = null;
+      this.$el = null;
       this._parent = null;
     },
     addChild: function(child, opt_render) {
@@ -321,6 +339,7 @@ define('Backbone.ComponentView', [
       });
     },
     getChildrenBySelector: function(selector) {
+      this._setupChildStorage();
       if (!selector) {
         return _.filter(this._children, function(child) {
           return !this.getSelectorForChild(child);
@@ -410,11 +429,15 @@ define('Backbone.ComponentView', [
     },
     setView: function(selector, child) {
       this._setupChildStorage();
-      _.each(this._views[selector], function(child) {
+      if (!child) {
+        child = selector;
+        selector = undefined;
+      }
+      _.each(this.getChildren(selector), function(child) {
         this.removeChild(child, true);
       }, this);
       this.createDom();
-      this.$(selector).empty();
+      this.$(selector || this.getContentElement()).empty();
       return this.insertView(selector, child);
     },
     insertView: function(selector, child) {

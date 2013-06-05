@@ -120,3 +120,15 @@ function(options) {
     });
 };
 ```
+##Changelog
+
+###v1.1.1
+
+- getChildrenBySelector should return a copy of the array
+
+###v1.1.0
+
+- change exitDocument method to private so user can set
+
+###v1.0.0
+- initial versioning
